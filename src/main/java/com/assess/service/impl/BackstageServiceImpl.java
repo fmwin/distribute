@@ -10,6 +10,7 @@ import com.assess.response.ViewsResponse;
 import com.assess.service.IBackstageService;
 import com.assess.util.DateUtil;
 import com.assess.util.MapUtils;
+import com.assess.util.RedisUtil;
 import com.assess.util.ResultMap;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -28,8 +29,10 @@ public class BackstageServiceImpl implements IBackstageService {
     private SAppMapper sAppMapper;
     @Resource
     private SCodeViewsMapper sCodeViewsMapper;
+    @Resource
+    private RedisUtil redisUtil;
 
-    public static final String URL_HEAD = "http://localhost:8090/index.html?myCode=";
+    public static final String URL_HEAD = "http://www.distribute.com/hello/index.html?myCode=";
 
     @Override
     public ResultMap generateUrl(int createUid, int usedUid) throws Exception {
@@ -160,6 +163,11 @@ public class BackstageServiceImpl implements IBackstageService {
             return resultMap;
         }
 
+        long time = 100;
+        redisUtil.set(user.getAccount(), user.getPassword(), time);
+        redisUtil.get(user.getAccount());
+
+        System.out.println(redisUtil.get(user.getAccount()).toString());
         user.setPassword(null);
         resultMap.setCode(1);
         resultMap.setDesc("登录成功");
