@@ -8,10 +8,7 @@ import com.assess.enums.RoleEnum;
 import com.assess.model.*;
 import com.assess.response.ViewsResponse;
 import com.assess.service.IBackstageService;
-import com.assess.util.DateUtil;
-import com.assess.util.MapUtils;
-import com.assess.util.RedisUtil;
-import com.assess.util.ResultMap;
+import com.assess.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -163,15 +160,20 @@ public class BackstageServiceImpl implements IBackstageService {
             return resultMap;
         }
 
-        long time = 100;
-        redisUtil.set(user.getAccount(), user.getPassword(), time);
-        redisUtil.get(user.getAccount());
+        long time = 86400;
+        String sessionKey = Base64Util.getBase64String(user.getAccount());
+        String sessionValue = RandomUtil.getTimeAndCountRandom(6);
 
-        System.out.println(redisUtil.get(user.getAccount()).toString());
+        redisUtil.set(sessionKey, sessionValue, time);
         user.setPassword(null);
+
+        Map response = new HashMap();
+        response.put("user", user);
+        response.put("sessionKey", sessionKey);
+        response.put("sessionValue", sessionValue);
         resultMap.setCode(1);
         resultMap.setDesc("登录成功");
-        resultMap.setData(user);
+        resultMap.setData(response);
         return resultMap;
     }
 
