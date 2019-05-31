@@ -44,7 +44,7 @@ public class UserInterceptor implements HandlerInterceptor {
             response.sendError(401, "fail");
             return false;
         }
-        String redisValue = redisUtil.get(sessionKey).toString();
+        String redisValue = redisUtil.get(sessionKey, 1).toString();
         if(redisValue == null || redisValue.equals("")){
 			/*result.setCode(Constance.RESPONSE_USER_ERROR);
 			result.setMsg("请登录");
@@ -62,7 +62,7 @@ public class UserInterceptor implements HandlerInterceptor {
             return false;
         }
         long time = 86400;
-        redisUtil.set(sessionKey, sessionValue, 86400);
+        redisUtil.set(sessionKey, sessionValue, time);
         request.setAttribute("sessionKey", sessionKey);
         request.setAttribute("sessionValue", sessionValue);
         return true;

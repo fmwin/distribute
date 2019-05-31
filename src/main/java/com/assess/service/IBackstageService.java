@@ -2,8 +2,6 @@ package com.assess.service;
 
 import com.assess.util.ResultMap;
 
-import java.util.Map;
-
 public interface IBackstageService {
     public ResultMap generateUrl(int createUid, int usedUid) throws Exception;
 

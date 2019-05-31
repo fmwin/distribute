@@ -30,6 +30,7 @@ public class BackstageServiceImpl implements IBackstageService {
     private RedisUtil redisUtil;
 
     public static final String URL_HEAD = "http://www.distribute.com/hello/index.html?myCode=";
+    public static final String UID_HEAD = "uid_";
 
     @Override
     public ResultMap generateUrl(int createUid, int usedUid) throws Exception {
@@ -161,10 +162,12 @@ public class BackstageServiceImpl implements IBackstageService {
         }
 
         long time = 86400;
-        String sessionKey = Base64Util.getBase64String(user.getAccount());
+        String origin = UID_HEAD+user.getId();
+        String sessionKey = Base64Util.getBase64String(origin);
         String sessionValue = RandomUtil.getTimeAndCountRandom(6);
-
-        redisUtil.set(sessionKey, sessionValue, time);
+        System.out.println(sessionKey+"------"+sessionValue);
+        redisUtil.set(sessionKey, sessionValue, 1);
+        redisUtil.expire(sessionKey, time);
         user.setPassword(null);
 
         Map response = new HashMap();

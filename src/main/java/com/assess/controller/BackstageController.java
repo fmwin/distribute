@@ -5,6 +5,7 @@ import com.assess.model.SUser;
 import com.assess.service.IAppService;
 import com.assess.service.IBackstageService;
 import com.assess.service.IUserService;
+import com.assess.util.Base64Util;
 import com.assess.util.MapUtils;
 import com.assess.util.ResultMap;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ public class BackstageController {
     private IUserService userService;
     @Resource
     private IAppService appService;
+    public static final String UID_HEAD = "uid_";
 
     /**
      * 生成url
@@ -287,7 +289,11 @@ public class BackstageController {
     @RequestMapping("/back/views")
     public ResultMap views(ServletRequest servletRequest){
         ResultMap resultMap = new ResultMap();
-        String uid = servletRequest.getParameter("uid");
+
+        String sessionKey = servletRequest.getAttribute("sessionKey").toString();
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
+        //String uid = servletRequest.getParameter("uid");
         if (StringUtils.isEmpty(uid)){
             resultMap.setCode(-1);
             resultMap.setDesc("请先登录");
@@ -314,7 +320,9 @@ public class BackstageController {
     @RequestMapping("/back/viewsList")
     public ResultMap viewsList(ServletRequest servletRequest){
         ResultMap resultMap = new ResultMap();
-        String uid = servletRequest.getParameter("uid");
+        String sessionKey = servletRequest.getAttribute("sessionKey").toString();
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
         if (StringUtils.isEmpty(uid)){
             resultMap.setCode(-1);
             resultMap.setDesc("请先登录");
