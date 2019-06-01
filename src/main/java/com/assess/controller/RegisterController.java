@@ -4,6 +4,7 @@ import com.assess.service.IRegisterService;
 import com.assess.util.MapUtils;
 import com.assess.util.ResultMap;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,43 +20,46 @@ public class RegisterController {
     private IRegisterService registerService;
 
     /**
-     * 用户注册
-     * @param user
+     *
+     * @param account
+     * @param password
+     * @param confirm
+     * @param realName
      * @return
      */
     @RequestMapping("/api/register")
     @ResponseBody
-    public ResultMap register(@RequestBody HashMap<String, String> user){
+    public ResultMap register(String account, String password, String confirm, String realName, String disCode){
         ResultMap resultMap = new ResultMap();
 
-        if (Objects.isNull(user)){
-            resultMap.setCode(-1);
-            resultMap.setDesc("请正确填写信息");
-            return resultMap;
-        }
-        if (MapUtils.isEmpty(user, "account")){
+        if (StringUtils.isEmpty(account)){
             resultMap.setCode(-1);
             resultMap.setDesc("请正确填写手机号");
             return resultMap;
         }
-        if (MapUtils.isEmpty(user, "password")){
+        if (StringUtils.isEmpty(password) || password.length()<6){
             resultMap.setCode(-1);
             resultMap.setDesc("请正确填写密码");
             return resultMap;
         }
-        if (MapUtils.isEmpty(user, "code")){
+        if (StringUtils.isEmpty(confirm)){
             resultMap.setCode(-1);
-            resultMap.setDesc("请正确填写验证码");
+            resultMap.setDesc("请正确填写密码");
+            return resultMap;
+        }
+        if (!password.equals(confirm)){
+            resultMap.setCode(-1);
+            resultMap.setDesc("密码不一致");
+            return resultMap;
+        }
+        if (StringUtils.isEmpty(realName)){
+            resultMap.setCode(-1);
+            resultMap.setDesc("请正确填写真实姓名");
             return resultMap;
         }
 
-        if (!user.get("code").equals("666888")){
-            resultMap.setCode(-1);
-            resultMap.setDesc("验证码错误");
-            return resultMap;
-        }
         try {
-            resultMap = registerService.register(user);
+            resultMap = registerService.register(account, password, confirm, realName, disCode);
         }catch (Exception e){
             e.printStackTrace();
             resultMap.setCode(-1);

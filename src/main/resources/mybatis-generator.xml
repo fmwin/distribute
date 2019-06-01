@@ -70,13 +70,14 @@
             <!--<property name="runtimeTableName" value="students"/>
         </table>-->
 
-        <!--<table tableName="s_user">
+        <table tableName="s_user">
             <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
             <columnOverride column="real_name" javaType="java.lang.String" />
             <columnOverride column="account" javaType="java.lang.String" />
             <columnOverride column="password" javaType="java.lang.String" />
             <columnOverride column="role" javaType="java.lang.String" />
-        </table>-->
+            <columnOverride column="dis_uid" javaType="java.lang.Integer" />
+        </table>
         <!--<table tableName="s_url">
             <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
             <columnOverride column="create_uid" javaType="java.lang.Integer" />
@@ -93,10 +94,10 @@
             <columnOverride column="index_number" javaType="java.lang.Integer" />
     </table>-->
 
-        <table tableName="s_code_views">
+        <!--<table tableName="s_code_views">
             <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
             <columnOverride column="code" javaType="java.lang.String" />
             <columnOverride column="views" javaType="java.lang.Integer" />
-        </table>
+        </table>-->
     </context>
 </generatorConfiguration>

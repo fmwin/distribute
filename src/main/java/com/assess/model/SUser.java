@@ -12,11 +12,13 @@ public class SUser implements Serializable {
 
     private String password;
 
+    private String role;
+
+    private Integer disUid;
+
     private Date createDate;
 
     private String updateDate;
-
-    private String role;
 
     private static final long serialVersionUID = 1L;
 
@@ -52,6 +54,22 @@ public class SUser implements Serializable {
         this.password = password == null ? null : password.trim();
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role == null ? null : role.trim();
+    }
+
+    public Integer getDisUid() {
+        return disUid;
+    }
+
+    public void setDisUid(Integer disUid) {
+        this.disUid = disUid;
+    }
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -68,14 +86,6 @@ public class SUser implements Serializable {
         this.updateDate = updateDate == null ? null : updateDate.trim();
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role == null ? null : role.trim();
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -86,9 +96,10 @@ public class SUser implements Serializable {
         sb.append(", realName=").append(realName);
         sb.append(", account=").append(account);
         sb.append(", password=").append(password);
+        sb.append(", role=").append(role);
+        sb.append(", disUid=").append(disUid);
         sb.append(", createDate=").append(createDate);
         sb.append(", updateDate=").append(updateDate);
-        sb.append(", role=").append(role);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

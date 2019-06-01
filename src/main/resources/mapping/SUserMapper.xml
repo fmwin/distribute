@@ -6,9 +6,10 @@
     <result column="real_name" jdbcType="VARCHAR" property="realName" />
     <result column="account" jdbcType="VARCHAR" property="account" />
     <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="role" jdbcType="VARCHAR" property="role" />
+    <result column="dis_uid" jdbcType="INTEGER" property="disUid" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="VARCHAR" property="updateDate" />
-    <result column="role" jdbcType="VARCHAR" property="role" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, real_name, account, password, create_date, update_date, role
+    id, real_name, account, password, role, dis_uid, create_date, update_date
   </sql>
   <select id="selectByExample" parameterType="com.assess.model.SUserExample" resultMap="BaseResultMap">
     select
@@ -106,11 +107,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into s_user (real_name, account, password, 
-      create_date, update_date, role
-      )
+      role, dis_uid, create_date, 
+      update_date)
     values (#{realName,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      now(), now(), #{role,jdbcType=VARCHAR}
-      )
+      #{role,jdbcType=VARCHAR}, #{disUid,jdbcType=INTEGER}, now(),
+      now())
   </insert>
   <insert id="insertSelective" parameterType="com.assess.model.SUser">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -127,14 +128,17 @@
       <if test="password != null">
         password,
       </if>
+      <if test="role != null">
+        role,
+      </if>
+      <if test="disUid != null">
+        dis_uid,
+      </if>
       <if test="createDate != null">
         create_date,
       </if>
       <if test="updateDate != null">
         update_date,
-      </if>
-      <if test="role != null">
-        role,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -147,14 +151,17 @@
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
+      <if test="role != null">
+        #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="disUid != null">
+        #{disUid,jdbcType=INTEGER},
+      </if>
       <if test="createDate != null">
         #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="updateDate != null">
         #{updateDate,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null">
-        #{role,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -179,14 +186,17 @@
       <if test="record.password != null">
         password = #{record.password,jdbcType=VARCHAR},
       </if>
+      <if test="record.role != null">
+        role = #{record.role,jdbcType=VARCHAR},
+      </if>
+      <if test="record.disUid != null">
+        dis_uid = #{record.disUid,jdbcType=INTEGER},
+      </if>
       <if test="record.createDate != null">
         create_date = #{record.createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="record.updateDate != null">
         update_date = #{record.updateDate,jdbcType=VARCHAR},
-      </if>
-      <if test="record.role != null">
-        role = #{record.role,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -199,9 +209,10 @@
       real_name = #{record.realName,jdbcType=VARCHAR},
       account = #{record.account,jdbcType=VARCHAR},
       password = #{record.password,jdbcType=VARCHAR},
+      role = #{record.role,jdbcType=VARCHAR},
+      dis_uid = #{record.disUid,jdbcType=INTEGER},
       create_date = #{record.createDate,jdbcType=TIMESTAMP},
-      update_date = #{record.updateDate,jdbcType=VARCHAR},
-      role = #{record.role,jdbcType=VARCHAR}
+      update_date = #{record.updateDate,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -218,14 +229,17 @@
       <if test="password != null">
         password = #{password,jdbcType=VARCHAR},
       </if>
+      <if test="role != null">
+        role = #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="disUid != null">
+        dis_uid = #{disUid,jdbcType=INTEGER},
+      </if>
       <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null">
-        role = #{role,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -235,9 +249,10 @@
     set real_name = #{realName,jdbcType=VARCHAR},
       account = #{account,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
+      role = #{role,jdbcType=VARCHAR},
+      dis_uid = #{disUid,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_date = #{updateDate,jdbcType=VARCHAR},
-      role = #{role,jdbcType=VARCHAR}
+      update_date = #{updateDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByExampleWithRowbounds" parameterType="com.assess.model.SUserExample" resultMap="BaseResultMap">
