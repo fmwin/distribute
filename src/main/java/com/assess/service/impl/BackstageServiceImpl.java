@@ -29,7 +29,7 @@ public class BackstageServiceImpl implements IBackstageService {
     @Resource
     private RedisUtil redisUtil;
 
-    public static final String URL_HEAD = "http://www.distribute.com/hello/index.html?myCode=";
+    public static final String URL_HEAD = "http://chuangya.tianjiurc.com/hello/index.html?disCode=";
     public static final String UID_HEAD = "uid_";
 
     @Override
@@ -57,7 +57,8 @@ public class BackstageServiceImpl implements IBackstageService {
         }
 
         String account = sUser.getAccount();
-        String url = String.format("%s%s", URL_HEAD, account);
+        String disCode = account.substring(account.length()-6);
+        String url = String.format("%s%s", URL_HEAD, disCode);
 
         SUrlExample sUrlExample = new SUrlExample();
         sUrlExample.createCriteria().andUrlEqualTo(url);

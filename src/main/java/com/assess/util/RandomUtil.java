@@ -24,6 +24,9 @@ public class RandomUtil {
     }
 
     public static String getTimeAndCountRandom(int count){
+        if (count <= 0){
+            return null;
+        }
         int passLength = count;
         StringBuffer buffer = null;
         StringBuffer sb = new StringBuffer();
@@ -43,6 +46,8 @@ public class RandomUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(RandomUtil.getTimeAndCountRandom(6));
+        String a = "18233189798";
+        String b = a.substring(a.length()-6);
+        System.out.println(b);
     }
 }

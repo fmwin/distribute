@@ -23,7 +23,7 @@ public class LoginController {
     @RequestMapping("/api/index")
     public ResultMap index(ServletRequest servletRequest){
         ResultMap resultMap = new ResultMap();
-        String code = servletRequest.getParameter("myCode");
+        String code = servletRequest.getParameter("disCode");
 
         try {
             if (StringUtils.isEmpty(code)){

@@ -44,7 +44,9 @@ public class BackstageController {
             resultMap.setDesc("信息不全");
             return resultMap;
         }
-        String createUid = servletRequest.getParameter("createUid");
+        String sessionKey = servletRequest.getAttribute("sessionKey").toString();
+        String createUid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
         String usedUid = servletRequest.getParameter("usedUid");
         if (StringUtils.isEmpty(createUid)){
             resultMap.setCode(-1);
@@ -83,7 +85,9 @@ public class BackstageController {
             resultMap.setDesc("信息不全");
             return resultMap;
         }
-        String uid = servletRequest.getParameter("uid");
+        String sessionKey = servletRequest.getAttribute("sessionKey").toString();
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
         if (StringUtils.isEmpty(uid)){
             resultMap.setCode(-1);
             resultMap.setDesc("请先登录");
@@ -105,7 +109,9 @@ public class BackstageController {
     public ResultMap getWorkerCodeList(ServletRequest servletRequest){
         ResultMap resultMap = new ResultMap();
 
-        String uid = servletRequest.getParameter("uid");
+        String sessionKey = servletRequest.getAttribute("sessionKey").toString();
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
         if (StringUtils.isEmpty(uid)){
             resultMap.setCode(-1);
             resultMap.setDesc("请先登录");
@@ -132,7 +138,9 @@ public class BackstageController {
     public ResultMap addWorker(ServletRequest servletRequest){
         ResultMap resultMap = new ResultMap();
 
-        String uid = servletRequest.getParameter("uid");
+        String sessionKey = servletRequest.getAttribute("sessionKey").toString();
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
         String account = servletRequest.getParameter("account");
         String password = servletRequest.getParameter("password");
         String realName = servletRequest.getParameter("realName");
@@ -178,7 +186,9 @@ public class BackstageController {
     @RequestMapping("/back/getAppList")
     public ResultMap getAppList(ServletRequest servletRequest){
         ResultMap resultMap = new ResultMap();
-        String uid = servletRequest.getParameter("uid");
+        String sessionKey = servletRequest.getAttribute("sessionKey").toString();
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
         if (StringUtils.isEmpty(uid)){
             resultMap.setCode(-1);
             resultMap.setDesc("请先登录");
@@ -206,7 +216,9 @@ public class BackstageController {
     @RequestMapping("/back/addApp")
     public ResultMap addApp(ServletRequest servletRequest){
         ResultMap resultMap = new ResultMap();
-        String uid = servletRequest.getParameter("uid");
+        String sessionKey = servletRequest.getAttribute("sessionKey").toString();
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
         String appUrl = servletRequest.getParameter("appUrl");
         String logoUrl = servletRequest.getParameter("logoUrl");
         String title = servletRequest.getParameter("title");
