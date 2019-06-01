@@ -3,10 +3,12 @@ package com.assess.controller;
 import com.assess.service.IRegisterService;
 import com.assess.util.MapUtils;
 import com.assess.util.ResultMap;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -29,7 +31,7 @@ public class RegisterController {
      */
     @RequestMapping("/api/register")
     @ResponseBody
-    public ResultMap register(String account, String password, String confirm, String realName, String disCode){
+    public ResultMap register(String account, String password, String confirm, String realName, @RequestParam(value = "disCode", required = false) String disCode){
         ResultMap resultMap = new ResultMap();
 
         if (StringUtils.isEmpty(account)){

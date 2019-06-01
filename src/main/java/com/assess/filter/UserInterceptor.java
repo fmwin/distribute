@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 @Component
 public class UserInterceptor implements HandlerInterceptor {
@@ -28,7 +29,7 @@ public class UserInterceptor implements HandlerInterceptor {
         //logger.info("access url: "+ url +"; sessionKey: "+ sessionKey +"; sessionValue: "+sessionValue);
 
         if(url.contains("user/login") || url.contains("/back/login")
-                || url.contains("/api/register") || url.contains("/api/index")){
+                || url.contains("/api/register") || url.contains("/api/index") || url.contains("/api/login")){
             return true;
         }
 		/*if(url.contains("fund/")){
@@ -45,8 +46,8 @@ public class UserInterceptor implements HandlerInterceptor {
             response.sendError(401, "fail");
             return false;
         }
-        String redisValue = redisUtil.get(sessionKey, 1).toString();
-        if(redisValue == null || redisValue.equals("")){
+        Object redisValue = redisUtil.get(sessionKey, 1);
+        if(Objects.isNull(redisValue)){
 			/*result.setCode(Constance.RESPONSE_USER_ERROR);
 			result.setMsg("请登录");
 			response.setContentType("application/json;charset=utf-8");
@@ -54,7 +55,8 @@ public class UserInterceptor implements HandlerInterceptor {
             response.sendError(401, "fail");
             return false;
         }
-        if(!redisValue.equals(sessionValue)){
+        String redisValueStr = redisValue.toString();
+        if(!redisValueStr.equals(sessionValue)){
 			/*result.setCode(Constance.RESPONSE_USER_ERROR);
 			result.setMsg("请登录");
 			response.setContentType("application/json;charset=utf-8");

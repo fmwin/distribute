@@ -2,17 +2,18 @@ package com.assess.service.impl;
 
 import com.assess.dao.SCodeViewsMapper;
 import com.assess.dao.SUrlMapper;
-import com.assess.model.SCodeViews;
-import com.assess.model.SCodeViewsExample;
-import com.assess.model.SUrl;
-import com.assess.model.SUrlExample;
+import com.assess.dao.SUserMapper;
+import com.assess.enums.RoleEnum;
+import com.assess.model.*;
 import com.assess.service.ICodeViewService;
+import com.assess.util.Base64Util;
+import com.assess.util.RandomUtil;
+import com.assess.util.RedisUtil;
+import com.assess.util.ResultMap;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class CodeViewServiceImpl implements ICodeViewService {
@@ -21,6 +22,12 @@ public class CodeViewServiceImpl implements ICodeViewService {
     private SCodeViewsMapper sCodeViewsMapper;
     @Resource
     private SUrlMapper sUrlMapper;
+    @Resource
+    private SUserMapper sUserMapper;
+    @Resource
+    private RedisUtil redisUtil;
+
+    public static final String UID_HEAD = "uid_";
 
     @Override
     public void createOrModifyCodeView(String code) throws Exception {
@@ -51,5 +58,38 @@ public class CodeViewServiceImpl implements ICodeViewService {
 
             sCodeViewsMapper.updateByPrimaryKey(codeView);
         }
+    }
+
+    @Override
+    public ResultMap login(String account, String password) throws Exception {
+        ResultMap resultMap = new ResultMap();
+        SUserExample sUserExample = new SUserExample();
+        sUserExample.createCriteria().andAccountEqualTo(account).andPasswordEqualTo(password);
+
+        List<SUser> sUserList = sUserMapper.selectByExample(sUserExample);
+        if (Objects.isNull(sUserList) || sUserList.isEmpty()){
+            resultMap.setCode(-1);
+            resultMap.setDesc("账号或密码不正确");
+            return resultMap;
+        }
+
+        SUser user = sUserList.get(0);
+
+        long time = 86400;
+        String origin = UID_HEAD+user.getId();
+        String sessionKey = Base64Util.getBase64String(origin);
+        String sessionValue = RandomUtil.getTimeAndCountRandom(6);
+        redisUtil.set(sessionKey, sessionValue, 1);
+        redisUtil.expire(sessionKey, time);
+        user.setPassword(null);
+
+        Map response = new HashMap();
+        response.put("user", user);
+        response.put("sessionKey", sessionKey);
+        response.put("sessionValue", sessionValue);
+        resultMap.setCode(1);
+        resultMap.setDesc("登录成功");
+        resultMap.setData(response);
+        return resultMap;
     }
 }
