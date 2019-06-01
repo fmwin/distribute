@@ -1,22 +1,17 @@
 package com.assess.controller;
 
 import com.assess.enums.RoleEnum;
-import com.assess.model.SUser;
 import com.assess.service.IAppService;
 import com.assess.service.IBackstageService;
 import com.assess.service.IUserService;
 import com.assess.util.Base64Util;
-import com.assess.util.MapUtils;
 import com.assess.util.ResultMap;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
-import java.util.HashMap;
 import java.util.Objects;
 
 @Controller
@@ -104,6 +99,11 @@ public class BackstageController {
         return resultMap;
     }
 
+    /**
+     * 获取员工链接列表
+     * @param servletRequest
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/back/getWorkerCodeList")
     public ResultMap getWorkerCodeList(ServletRequest servletRequest){
@@ -182,6 +182,11 @@ public class BackstageController {
         return resultMap;
     }
 
+    /**
+     * 获取app列表
+     * @param servletRequest
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/back/getAppList")
     public ResultMap getAppList(ServletRequest servletRequest){

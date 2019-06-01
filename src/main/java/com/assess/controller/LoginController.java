@@ -2,7 +2,6 @@ package com.assess.controller;
 
 import com.assess.service.IAppService;
 import com.assess.service.ICodeViewService;
-import com.assess.util.Base64Util;
 import com.assess.util.CodeUtil;
 import com.assess.util.ResultMap;
 import org.springframework.stereotype.Controller;
@@ -11,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.annotation.Resource;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -24,6 +21,11 @@ public class LoginController {
     @Resource
     private ICodeViewService codeViewService;
 
+    /**
+     * 用户获取app列表
+     * @param servletRequest
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/api/index")
     public ResultMap index(HttpServletRequest servletRequest){
@@ -50,6 +52,13 @@ public class LoginController {
         return resultMap;
     }
 
+    /**
+     * 用户登录
+     * @param account
+     * @param password
+     * @param checkCode
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/api/login", method = RequestMethod.POST)
     public ResultMap login(String account, String password, @RequestParam(value = "checkCode", required = false) String checkCode){

@@ -22,7 +22,7 @@ public class RegisterController {
     private IRegisterService registerService;
 
     /**
-     *
+     *用户注册
      * @param account
      * @param password
      * @param confirm

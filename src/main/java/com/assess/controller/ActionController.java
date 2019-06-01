@@ -20,6 +20,11 @@ public class ActionController {
 
     public static final String UID_HEAD = "uid_";
 
+    /**
+     * 用户点击动作记录
+     * @param request
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/api/action")
     public ResultMap action(HttpServletRequest request){
