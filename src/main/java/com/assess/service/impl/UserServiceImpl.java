@@ -9,6 +9,7 @@ import com.assess.model.SUser;
 import com.assess.model.SUserExample;
 import com.assess.response.WokerCodeResponse;
 import com.assess.service.IUserService;
+import com.assess.util.CodeUtil;
 import com.assess.util.ResultMap;
 import org.springframework.stereotype.Service;
 
@@ -98,6 +99,7 @@ public class UserServiceImpl implements IUserService {
                     SUrl sUrl = sUrlList.get(0);
                     wokerCodeResponse.setCode(sUrl.getCode());
                     wokerCodeResponse.setUrl(sUrl.getUrl());
+                    wokerCodeResponse.setUrlId(sUrl.getId());
                 }
 
                 wokerCodeResponseList.add(wokerCodeResponse);
@@ -157,5 +159,70 @@ public class UserServiceImpl implements IUserService {
         resultMap.setData(sUser.getId());
 
         return resultMap;
+    }
+
+    @Override
+    public ResultMap deleteWorker(Integer uid, Integer operatorId) throws Exception {
+        ResultMap resultMap = new ResultMap();
+        if (!isAdmin(operatorId)){
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
+            resultMap.setDesc("权限不足");
+            return resultMap;
+        }
+        sUserMapper.deleteByPrimaryKey(uid);
+
+        resultMap.setCode(CodeUtil.SUCCESS);
+        resultMap.setDesc("删除成功");
+        return resultMap;
+    }
+
+    @Override
+    public ResultMap updateWorker(Integer id, String account, String password, String realName, Integer operator) throws Exception {
+        ResultMap resultMap = new ResultMap();
+        if (!isAdmin(operator)){
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
+            resultMap.setDesc("权限不足");
+            return resultMap;
+        }
+
+        SUser sUser = new SUser();
+        sUser.setId(id);
+        sUser.setAccount(account);
+        sUser.setPassword(password);
+        sUser.setRealName(realName);
+
+        sUserMapper.updateByPrimaryKeySelective(sUser);
+
+        resultMap.setCode(CodeUtil.SUCCESS);
+        resultMap.setDesc("更新员工信息成功");
+        return resultMap;
+    }
+
+    @Override
+    public ResultMap getWorker(Integer id, Integer operator) throws Exception {
+        ResultMap resultMap = new ResultMap();
+        if (!isAdmin(operator)){
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
+            resultMap.setDesc("权限不足");
+            return resultMap;
+        }
+        SUser sUser = sUserMapper.selectByPrimaryKey(id);
+        if (Objects.isNull(sUser)){
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
+            resultMap.setDesc("用户不存在");
+            return resultMap;
+        }
+        resultMap.setCode(CodeUtil.SUCCESS);
+        resultMap.setDesc("获取用户信息成功");
+        resultMap.setData(sUser);
+        return resultMap;
+    }
+
+        private boolean isAdmin(Integer uid){
+        SUser createUser = sUserMapper.selectByPrimaryKey(uid);
+        if (Objects.isNull(createUser) || !createUser.getRole().contains(RoleEnum.SUPER_ADMIN.getCode())){
+            return false;
+        }
+        return true;
     }
 }

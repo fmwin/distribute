@@ -84,6 +84,21 @@ public class BackstageServiceImpl implements IBackstageService {
     }
 
     @Override
+    public ResultMap deleteUrl(int uid, int urlId) throws Exception {
+        ResultMap resultMap = new ResultMap();
+        if (!isAdmin(uid)){
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
+            resultMap.setDesc("权限不足");
+            return resultMap;
+        }
+        sUrlMapper.deleteByPrimaryKey(urlId);
+
+        resultMap.setCode(CodeUtil.SUCCESS);
+        resultMap.setDesc("删除成功");
+        return resultMap;
+    }
+
+    @Override
     public ResultMap addApp(String uid, String appUrl, String logoUrl, String title, String remark, Integer index_number) throws Exception {
         ResultMap resultMap = new ResultMap();
         if (!isAdmin(Integer.parseInt(uid))){

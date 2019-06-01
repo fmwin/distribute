@@ -5,6 +5,8 @@ import com.assess.util.ResultMap;
 public interface IBackstageService {
     public ResultMap generateUrl(int createUid, int usedUid) throws Exception;
 
+    public ResultMap deleteUrl(int uid, int urlId) throws Exception ;
+
     public ResultMap addApp(String uid, String appUrl, String logoUrl, String title, String remark, Integer index_number) throws Exception;
 
     public ResultMap login(String account, String password) throws Exception;

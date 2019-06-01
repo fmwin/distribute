@@ -17,6 +17,8 @@ public class WokerCodeResponse {
 
     private String role;
 
+    private Integer urlId;
+
     public Integer getId() {
         return id;
     }
@@ -71,5 +73,13 @@ public class WokerCodeResponse {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Integer getUrlId() {
+        return urlId;
+    }
+
+    public void setUrlId(Integer urlId) {
+        this.urlId = urlId;
     }
 }

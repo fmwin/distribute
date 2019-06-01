@@ -5,6 +5,7 @@ import com.assess.service.IAppService;
 import com.assess.service.IBackstageService;
 import com.assess.service.IUserService;
 import com.assess.util.Base64Util;
+import com.assess.util.CodeUtil;
 import com.assess.util.ResultMap;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 @Controller
@@ -32,14 +34,14 @@ public class BackstageController {
      */
     @ResponseBody
     @RequestMapping("/back/generateUrl")
-    public ResultMap generateUrl(ServletRequest servletRequest) {
+    public ResultMap generateUrl(HttpServletRequest servletRequest) {
         ResultMap resultMap = new ResultMap();
         if (Objects.isNull(servletRequest)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.EMPTY);
             resultMap.setDesc("信息不全");
             return resultMap;
         }
-        String sessionKey = servletRequest.getAttribute("sessionKey").toString();
+        String sessionKey = servletRequest.getHeader("sessionKey");
         String createUid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
 
         String usedUid = servletRequest.getParameter("usedUid");
@@ -57,6 +59,31 @@ public class BackstageController {
 
         try {
             resultMap = backstageService.generateUrl(Integer.parseInt(createUid), Integer.parseInt(usedUid));
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.setCode(CodeUtil.INNER_ERROR);
+            resultMap.setDesc("内部错误");
+            return resultMap;
+        }
+        return resultMap;
+    }
+
+    @ResponseBody
+    @RequestMapping("/back/deleteUrl")
+    public ResultMap generateUrl(int urlId, HttpServletRequest request){
+        ResultMap resultMap = new ResultMap();
+        if (Objects.isNull(urlId)){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("信息不全");
+            return resultMap;
+        }
+
+        String sessionKey = request.getHeader("sessionKey");
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
+
+        try {
+            resultMap = backstageService.deleteUrl(Integer.parseInt(uid), urlId);
         }catch (Exception e){
             e.printStackTrace();
             resultMap.setCode(-1);
@@ -179,6 +206,59 @@ public class BackstageController {
             return resultMap;
         }
 
+        return resultMap;
+    }
+
+    @ResponseBody
+    @RequestMapping("/back/deleteWorker")
+    public ResultMap deleteWorker(int uid, HttpServletRequest request){
+        ResultMap resultMap = new ResultMap();
+
+        if (uid==1){
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
+            resultMap.setDesc("权限不足");
+        }
+
+        String sessionKey = request.getHeader("sessionKey");
+        String operatorId = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+        try {
+            resultMap = userService.deleteWorker(uid, Integer.parseInt(operatorId));
+        }catch (Exception e){
+            resultMap.setCode(CodeUtil.INNER_ERROR);
+            resultMap.setDesc("内部错误");
+        }
+        return resultMap;
+    }
+
+    @ResponseBody
+    @RequestMapping("/back/updateWorker")
+    public ResultMap deleteWorker(int uid, String account, String password, String realName, HttpServletRequest request){
+        ResultMap resultMap = new ResultMap();
+        String sessionKey = request.getHeader("sessionKey");
+        String operatorId = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
+        try {
+            resultMap = userService.updateWorker(uid, account, password, realName, Integer.parseInt(operatorId));
+        }catch (Exception e){
+            resultMap.setCode(CodeUtil.INNER_ERROR);
+            resultMap.setDesc("内部错误");
+        }
+        return resultMap;
+    }
+
+    @ResponseBody
+    @RequestMapping("/back/getWorker")
+    public ResultMap getWorker(int uid, HttpServletRequest request){
+        ResultMap resultMap = new ResultMap();
+        String sessionKey = request.getHeader("sessionKey");
+        String operatorId = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
+        try {
+            resultMap = userService.getWorker(uid, Integer.parseInt(operatorId));
+        }catch (Exception e){
+            resultMap.setCode(CodeUtil.INNER_ERROR);
+            resultMap.setDesc("内部错误");
+        }
         return resultMap;
     }
 
