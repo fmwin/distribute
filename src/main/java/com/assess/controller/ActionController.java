@@ -6,6 +6,7 @@ import com.assess.util.Base64Util;
 import com.assess.util.CodeUtil;
 import com.assess.util.IpUtil;
 import com.assess.util.ResultMap;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,8 @@ public class ActionController {
     private IActionService actionService;
     @Resource
     private ICodeViewService codeViewService;
+
+    private Logger logger = Logger.getLogger(ActionController.class);
 
     public static final String UID_HEAD = "uid_";
 
@@ -41,6 +44,8 @@ public class ActionController {
         String code = request.getParameter("disCode");
         String ip = IpUtil.getIpAddress(request);
 
+        logger.info(String.format("interface:action params:appId=%s, code=%s, ip=%s", appId, code, ip));
+
         try {
             try {
                 if (!StringUtils.isEmpty(uid) && !StringUtils.isEmpty(appId)) {
@@ -49,8 +54,7 @@ public class ActionController {
                     actionService.addAction(uidInt, appIdInt, ip);
                 }
             }catch (Exception e){
-                e.printStackTrace();
-                System.out.println("统计用户行为失败");
+                logger.error("统计用户行为失败", e);
             }
             if (StringUtils.isEmpty(code)){
                 code = "admin";
@@ -58,11 +62,10 @@ public class ActionController {
             try {
                 codeViewService.createOrModifyCodeView(code);
             }catch (Exception e){
-                e.printStackTrace();
-                System.out.println("加量失败");
+                logger.error("加量失败", e);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error("interface:action failed", e);
             resultMap.setCode(0);
             resultMap.setDesc("内部错误");
             return resultMap;
