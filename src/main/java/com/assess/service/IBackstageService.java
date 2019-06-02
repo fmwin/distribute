@@ -7,7 +7,9 @@ public interface IBackstageService {
 
     public ResultMap deleteUrl(int uid, int urlId) throws Exception ;
 
-    public ResultMap addApp(String uid, String appUrl, String logoUrl, String title, String remark, Integer index_number) throws Exception;
+    public ResultMap addApp(String uid, String appUrl, String logoUrl, String title, String remark, Integer index_number, String property, Integer level) throws Exception;
+
+    public ResultMap updateApp(Integer id, String uid, String appUrl, String logoUrl, String title, String remark, Integer index_number, String property, Integer level) throws Exception;
 
     public ResultMap login(String account, String password) throws Exception;
 

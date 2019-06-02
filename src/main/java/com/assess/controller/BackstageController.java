@@ -7,9 +7,12 @@ import com.assess.service.IUserService;
 import com.assess.util.Base64Util;
 import com.assess.util.CodeUtil;
 import com.assess.util.ResultMap;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
@@ -18,6 +21,8 @@ import java.util.Objects;
 
 @Controller
 public class BackstageController {
+
+    private Logger logger = Logger.getLogger(BackstageController.class);
 
     @Resource
     private IBackstageService backstageService;
@@ -293,51 +298,178 @@ public class BackstageController {
     }
 
     /**
-     * 增加app
-     * @param servletRequest
+     * 获取app信息
+     * @param appId
      * @return
      */
     @ResponseBody
-    @RequestMapping("/back/addApp")
-    public ResultMap addApp(ServletRequest servletRequest){
+    @RequestMapping("/back/getApp")
+    public ResultMap getApp(int appId){
         ResultMap resultMap = new ResultMap();
-        String sessionKey = servletRequest.getAttribute("sessionKey").toString();
-        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
-
-        String appUrl = servletRequest.getParameter("appUrl");
-        String logoUrl = servletRequest.getParameter("logoUrl");
-        String title = servletRequest.getParameter("title");
-        String remark = servletRequest.getParameter("remark");
-        String index_number = servletRequest.getParameter("indexNumber");
-        Integer index = 100;
-
-        if (StringUtils.isEmpty(uid)){
-            resultMap.setCode(-1);
-            resultMap.setDesc("请先登录");
+        try {
+            resultMap = appService.getApp(appId);
+        }catch (Exception e){
+            logger.error(String.format("interface:/back/getApp error params: appId=%d", appId), e);
+            resultMap.setCode(0);
+            resultMap.setDesc("内部错误");
             return resultMap;
         }
 
+        return resultMap;
+    }
+
+    /**
+     * 新增app
+     * @param appUrl
+     * @param logoUrl
+     * @param title
+     * @param remark
+     * @param indexNumber
+     * @param property
+     * @param level
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/back/addApp", method = RequestMethod.POST)
+    public ResultMap addApp(String appUrl, String logoUrl, String title, @RequestParam(value = "remark", required = false) String remark,@RequestParam(value = "indexNumber", required = false) Integer indexNumber, @RequestParam(value = "property", required = false) String property, Integer level, HttpServletRequest request){
+        ResultMap resultMap = new ResultMap();
+        String sessionKey = request.getHeader("sessionKey");
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
+
+        Integer index = 100;
+        if (!StringUtils.isEmpty(indexNumber)){
+            index = indexNumber;
+        }
+
         if (StringUtils.isEmpty(appUrl)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.EMPTY);
             resultMap.setDesc("请正确填写app链接");
             return resultMap;
         }
         if (StringUtils.isEmpty(logoUrl)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.EMPTY);
             resultMap.setDesc("请正确填写logo图片链接");
             return resultMap;
         }
         if (StringUtils.isEmpty(title)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.EMPTY);
             resultMap.setDesc("请正确填写app标题");
             return resultMap;
         }
-
-        if (null != index_number){
-          index = Integer.parseInt(index_number);
+        if (StringUtils.isEmpty(property)){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("请正确填写app特点");
+            return resultMap;
         }
+        if (null == level || level > 5){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("请正确填写app星级");
+            return resultMap;
+        }
+
         try {
-            resultMap = backstageService.addApp(uid, appUrl, logoUrl, title, remark, index);
+            resultMap = backstageService.addApp(uid, appUrl, logoUrl, title, remark, index, property, level);
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.setCode(0);
+            resultMap.setDesc("内部错误");
+            return resultMap;
+        }
+
+        return resultMap;
+    }
+
+    /**
+     * 删除app
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/back/deleteApp")
+    public ResultMap deleteApp(Integer id){
+        ResultMap resultMap = new ResultMap();
+        try {
+            if (null == id){
+                resultMap.setCode(CodeUtil.EMPTY);
+                resultMap.setDesc("请选择要删除的app");
+                return resultMap;
+            }
+            appService.deleteApp(id);
+        }catch (Exception e){
+            logger.error(String.format("interface:/back/deleteApp error params: appId=%d", id), e);
+            resultMap.setCode(CodeUtil.INNER_ERROR);
+            resultMap.setDesc("内部错误");
+            return resultMap;
+        }
+
+        resultMap.setCode(CodeUtil.SUCCESS);
+        resultMap.setDesc("删除app成功");
+        return resultMap;
+    }
+
+    /**
+     * 更新app
+     * @param appUrl
+     * @param logoUrl
+     * @param title
+     * @param remark
+     * @param indexNumber
+     * @param property
+     * @param level
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/back/updateApp")
+    public ResultMap updateApp(Integer id, String appUrl, String logoUrl, String title,
+                               @RequestParam(value = "remark", required = false) String remark,
+                               @RequestParam(value = "indexNumber", required = false) Integer indexNumber,
+                               @RequestParam(value = "property", required = false) String property, Integer level,
+                               HttpServletRequest request){
+        ResultMap resultMap = new ResultMap();
+        String sessionKey = request.getHeader("sessionKey");
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+
+        Integer index = 100;
+        if (null != indexNumber){
+            index = indexNumber;
+        }
+        if (null == id){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("请选择要更新的app");
+            return resultMap;
+        }
+
+        if (StringUtils.isEmpty(appUrl)){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("请正确填写app链接");
+            return resultMap;
+        }
+        if (StringUtils.isEmpty(logoUrl)){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("请正确填写logo图片链接");
+            return resultMap;
+        }
+        if (StringUtils.isEmpty(title)){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("请正确填写app标题");
+            return resultMap;
+        }
+        if (StringUtils.isEmpty(property)){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("请正确填写app特点");
+            return resultMap;
+        }
+        if (null == level || level > 5){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("请正确填写app星级");
+            return resultMap;
+        }
+
+        try {
+            resultMap = backstageService.updateApp(id, uid, appUrl, logoUrl, title, remark, index, property, level);
         }catch (Exception e){
             e.printStackTrace();
             resultMap.setCode(0);

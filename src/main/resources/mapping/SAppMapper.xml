@@ -8,8 +8,11 @@
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="index_number" jdbcType="INTEGER" property="indexNumber" />
+    <result column="property" jdbcType="VARCHAR" property="property" />
+    <result column="level" jdbcType="INTEGER" property="level" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="create_uid" jdbcType="INTEGER" property="createUid" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,7 +73,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, app_url, logo_url, title, remark, index_number, create_date, update_date
+    id, app_url, logo_url, title, remark, index_number, property, level, create_date, 
+    update_date, create_uid
   </sql>
   <select id="selectByExample" parameterType="com.assess.model.SAppExample" resultMap="BaseResultMap">
     select
@@ -107,11 +111,13 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into s_app (app_url, logo_url, title, 
-      remark, index_number, create_date, 
-      update_date)
+      remark, index_number, property, 
+      level, create_date, update_date, 
+      create_uid)
     values (#{appUrl,jdbcType=VARCHAR}, #{logoUrl,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{indexNumber,jdbcType=INTEGER}, now(),
-      now())
+      #{remark,jdbcType=VARCHAR}, #{indexNumber,jdbcType=INTEGER}, #{property,jdbcType=VARCHAR}, 
+      #{level,jdbcType=INTEGER}, now(), now(),
+      #{createUid,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.assess.model.SApp">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -134,11 +140,20 @@
       <if test="indexNumber != null">
         index_number,
       </if>
+      <if test="property != null">
+        property,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
       <if test="createDate != null">
         create_date,
       </if>
       <if test="updateDate != null">
         update_date,
+      </if>
+      <if test="createUid != null">
+        create_uid,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -157,11 +172,20 @@
       <if test="indexNumber != null">
         #{indexNumber,jdbcType=INTEGER},
       </if>
+      <if test="property != null">
+        #{property,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
       <if test="createDate != null">
         #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="updateDate != null">
         #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -192,11 +216,20 @@
       <if test="record.indexNumber != null">
         index_number = #{record.indexNumber,jdbcType=INTEGER},
       </if>
+      <if test="record.property != null">
+        property = #{record.property,jdbcType=VARCHAR},
+      </if>
+      <if test="record.level != null">
+        level = #{record.level,jdbcType=INTEGER},
+      </if>
       <if test="record.createDate != null">
         create_date = #{record.createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="record.updateDate != null">
         update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createUid != null">
+        create_uid = #{record.createUid,jdbcType=INTEGER},
       </if>
     </set>
     <if test="_parameter != null">
@@ -211,8 +244,11 @@
       title = #{record.title,jdbcType=VARCHAR},
       remark = #{record.remark,jdbcType=VARCHAR},
       index_number = #{record.indexNumber,jdbcType=INTEGER},
+      property = #{record.property,jdbcType=VARCHAR},
+      level = #{record.level,jdbcType=INTEGER},
       create_date = #{record.createDate,jdbcType=TIMESTAMP},
-      update_date = #{record.updateDate,jdbcType=TIMESTAMP}
+      update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+      create_uid = #{record.createUid,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -235,11 +271,20 @@
       <if test="indexNumber != null">
         index_number = #{indexNumber,jdbcType=INTEGER},
       </if>
+      <if test="property != null">
+        property = #{property,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
       <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -251,8 +296,11 @@
       title = #{title,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
       index_number = #{indexNumber,jdbcType=INTEGER},
+      property = #{property,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_date = #{updateDate,jdbcType=TIMESTAMP}
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      create_uid = #{createUid,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByExampleWithRowbounds" parameterType="com.assess.model.SAppExample" resultMap="BaseResultMap">

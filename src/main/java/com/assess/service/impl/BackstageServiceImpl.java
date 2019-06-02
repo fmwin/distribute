@@ -99,7 +99,7 @@ public class BackstageServiceImpl implements IBackstageService {
     }
 
     @Override
-    public ResultMap addApp(String uid, String appUrl, String logoUrl, String title, String remark, Integer index_number) throws Exception {
+    public ResultMap addApp(String uid, String appUrl, String logoUrl, String title, String remark, Integer index_number, String property, Integer level) throws Exception {
         ResultMap resultMap = new ResultMap();
         if (!isAdmin(Integer.parseInt(uid))){
             resultMap.setCode(-1);
@@ -111,6 +111,12 @@ public class BackstageServiceImpl implements IBackstageService {
         sApp.setAppUrl(appUrl);
         sApp.setLogoUrl(logoUrl);
         sApp.setTitle(title);
+        sApp.setLevel(level);
+        sApp.setCreateUid(Integer.parseInt(uid));
+
+        if (!StringUtils.isEmpty(property)) {
+            sApp.setProperty(property);
+        }
 
         if (!StringUtils.isEmpty(remark)) {
             sApp.setRemark(remark);
@@ -123,6 +129,40 @@ public class BackstageServiceImpl implements IBackstageService {
 
         resultMap.setCode(1);
         resultMap.setDesc("创建app成功");
+        resultMap.setData(sApp.getId());
+        return resultMap;
+    }
+
+    @Override
+    public ResultMap updateApp(Integer id, String uid, String appUrl, String logoUrl, String title, String remark, Integer index_number, String property, Integer level) throws Exception {
+        ResultMap resultMap = new ResultMap();
+        if (!isAdmin(Integer.parseInt(uid))){
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
+            resultMap.setDesc("只有管理员可添加app");
+            return resultMap;
+        }
+
+        SApp sApp = sAppMapper.selectByPrimaryKey(id);
+        if (Objects.isNull(sApp)){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("该app已被删除");
+            return resultMap;
+        }
+
+        sApp.setAppUrl(appUrl);
+        sApp.setLogoUrl(logoUrl);
+        sApp.setTitle(title);
+        sApp.setLevel(level);
+        sApp.setCreateUid(Integer.parseInt(uid));
+        sApp.setProperty(property);
+        sApp.setRemark(remark);
+        sApp.setIndexNumber(index_number);
+
+
+        sAppMapper.updateByPrimaryKey(sApp);
+
+        resultMap.setCode(CodeUtil.SUCCESS);
+        resultMap.setDesc("更新app成功");
         resultMap.setData(sApp.getId());
         return resultMap;
     }

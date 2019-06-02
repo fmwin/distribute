@@ -16,9 +16,15 @@ public class SApp implements Serializable {
 
     private Integer indexNumber;
 
+    private String property;
+
+    private Integer level;
+
     private Date createDate;
 
     private Date updateDate;
+
+    private Integer createUid;
 
     private static final long serialVersionUID = 1L;
 
@@ -70,6 +76,22 @@ public class SApp implements Serializable {
         this.indexNumber = indexNumber;
     }
 
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String property) {
+        this.property = property == null ? null : property.trim();
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -86,6 +108,14 @@ public class SApp implements Serializable {
         this.updateDate = updateDate;
     }
 
+    public Integer getCreateUid() {
+        return createUid;
+    }
+
+    public void setCreateUid(Integer createUid) {
+        this.createUid = createUid;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -98,8 +128,11 @@ public class SApp implements Serializable {
         sb.append(", title=").append(title);
         sb.append(", remark=").append(remark);
         sb.append(", indexNumber=").append(indexNumber);
+        sb.append(", property=").append(property);
+        sb.append(", level=").append(level);
         sb.append(", createDate=").append(createDate);
         sb.append(", updateDate=").append(updateDate);
+        sb.append(", createUid=").append(createUid);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -505,6 +505,136 @@ public class SAppExample {
             return (Criteria) this;
         }
 
+        public Criteria andPropertyIsNull() {
+            addCriterion("property is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyIsNotNull() {
+            addCriterion("property is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyEqualTo(String value) {
+            addCriterion("property =", value, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyNotEqualTo(String value) {
+            addCriterion("property <>", value, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyGreaterThan(String value) {
+            addCriterion("property >", value, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyGreaterThanOrEqualTo(String value) {
+            addCriterion("property >=", value, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyLessThan(String value) {
+            addCriterion("property <", value, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyLessThanOrEqualTo(String value) {
+            addCriterion("property <=", value, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyLike(String value) {
+            addCriterion("property like", value, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyNotLike(String value) {
+            addCriterion("property not like", value, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyIn(List<String> values) {
+            addCriterion("property in", values, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyNotIn(List<String> values) {
+            addCriterion("property not in", values, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyBetween(String value1, String value2) {
+            addCriterion("property between", value1, value2, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andPropertyNotBetween(String value1, String value2) {
+            addCriterion("property not between", value1, value2, "property");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelIsNull() {
+            addCriterion("level is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelIsNotNull() {
+            addCriterion("level is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelEqualTo(Integer value) {
+            addCriterion("level =", value, "level");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelNotEqualTo(Integer value) {
+            addCriterion("level <>", value, "level");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelGreaterThan(Integer value) {
+            addCriterion("level >", value, "level");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelGreaterThanOrEqualTo(Integer value) {
+            addCriterion("level >=", value, "level");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelLessThan(Integer value) {
+            addCriterion("level <", value, "level");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelLessThanOrEqualTo(Integer value) {
+            addCriterion("level <=", value, "level");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelIn(List<Integer> values) {
+            addCriterion("level in", values, "level");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelNotIn(List<Integer> values) {
+            addCriterion("level not in", values, "level");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelBetween(Integer value1, Integer value2) {
+            addCriterion("level between", value1, value2, "level");
+            return (Criteria) this;
+        }
+
+        public Criteria andLevelNotBetween(Integer value1, Integer value2) {
+            addCriterion("level not between", value1, value2, "level");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateDateIsNull() {
             addCriterion("create_date is null");
             return (Criteria) this;
@@ -622,6 +752,66 @@ public class SAppExample {
 
         public Criteria andUpdateDateNotBetween(Date value1, Date value2) {
             addCriterion("update_date not between", value1, value2, "updateDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidIsNull() {
+            addCriterion("create_uid is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidIsNotNull() {
+            addCriterion("create_uid is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidEqualTo(Integer value) {
+            addCriterion("create_uid =", value, "createUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidNotEqualTo(Integer value) {
+            addCriterion("create_uid <>", value, "createUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidGreaterThan(Integer value) {
+            addCriterion("create_uid >", value, "createUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidGreaterThanOrEqualTo(Integer value) {
+            addCriterion("create_uid >=", value, "createUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidLessThan(Integer value) {
+            addCriterion("create_uid <", value, "createUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidLessThanOrEqualTo(Integer value) {
+            addCriterion("create_uid <=", value, "createUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidIn(List<Integer> values) {
+            addCriterion("create_uid in", values, "createUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidNotIn(List<Integer> values) {
+            addCriterion("create_uid not in", values, "createUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidBetween(Integer value1, Integer value2) {
+            addCriterion("create_uid between", value1, value2, "createUid");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateUidNotBetween(Integer value1, Integer value2) {
+            addCriterion("create_uid not between", value1, value2, "createUid");
             return (Criteria) this;
         }
     }
