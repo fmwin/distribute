@@ -6,7 +6,9 @@ import com.assess.service.IBackstageService;
 import com.assess.service.IUserService;
 import com.assess.util.Base64Util;
 import com.assess.util.CodeUtil;
+import com.assess.util.PageUtil;
 import com.assess.util.ResultMap;
+import com.sun.tools.javac.jvm.Code;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -50,13 +52,14 @@ public class BackstageController {
         String createUid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
 
         String usedUid = servletRequest.getParameter("usedUid");
+        logger.info(String.format("interface:/back/generateUrl params: usedUid=%s", usedUid));
         if (StringUtils.isEmpty(createUid)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
             resultMap.setDesc("请先登录");
             return resultMap;
         }
         if (StringUtils.isEmpty(usedUid)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.EMPTY);
             resultMap.setDesc("请选择使用人");
             return resultMap;
         }
@@ -65,7 +68,7 @@ public class BackstageController {
         try {
             resultMap = backstageService.generateUrl(Integer.parseInt(createUid), Integer.parseInt(usedUid));
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(String.format("interface:/back/generateUrl error params: usedUid=%s", usedUid), e);
             resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
             return resultMap;
@@ -83,6 +86,8 @@ public class BackstageController {
             return resultMap;
         }
 
+        logger.info(String.format("interface:/back/deleteUrl params: urlId=%s", urlId));
+
         String sessionKey = request.getHeader("sessionKey");
         String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
 
@@ -90,7 +95,7 @@ public class BackstageController {
         try {
             resultMap = backstageService.deleteUrl(Integer.parseInt(uid), urlId);
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(String.format("interface:/back/deleteUrl error params: urlId=%s", urlId), e);
             resultMap.setCode(-1);
             resultMap.setDesc("内部错误");
             return resultMap;
@@ -123,8 +128,8 @@ public class BackstageController {
         try {
             resultMap = userService.getWorkerList(Integer.parseInt(uid));
         }catch (Exception e){
-            e.printStackTrace();
-            resultMap.setCode(0);
+            logger.error("interface:/back/getWorkerList error", e);
+            resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
             return resultMap;
         }
@@ -145,15 +150,15 @@ public class BackstageController {
         String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
 
         if (StringUtils.isEmpty(uid)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
             resultMap.setDesc("请先登录");
             return resultMap;
         }
         try {
             resultMap = userService.getWorkerCodeList(Integer.parseInt(uid));
         }catch (Exception e){
-            e.printStackTrace();
-            resultMap.setCode(0);
+            logger.error("interface:/back/getWorkerCodeList error", e);
+            resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
             return resultMap;
         }
@@ -178,35 +183,36 @@ public class BackstageController {
         String realName = servletRequest.getParameter("realName");
 
         if (StringUtils.isEmpty(uid)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
             resultMap.setDesc("请先登录");
             return resultMap;
         }
 
         if (StringUtils.isEmpty(account)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.EMPTY);
             resultMap.setDesc("请输入账号");
             return resultMap;
         }
 
         if (StringUtils.isEmpty(password)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.EMPTY);
             resultMap.setDesc("请输入密码");
             return resultMap;
         }
 
         if (StringUtils.isEmpty(realName)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.EMPTY);
             resultMap.setDesc("请输入姓名");
             return resultMap;
         }
 
         String role = RoleEnum.WORKER.getCode();
+        logger.info(String.format("interface:/back/addWorker params: account=%s, password=%s, realName=%s, role=%s", account, password, realName, role));
         try {
             resultMap = userService.addUser(Integer.parseInt(uid), account, password, realName, role);
         }catch (Exception e){
-            e.printStackTrace();
-            resultMap.setCode(0);
+            logger.error("interface:/back/addWorker error: ", e);
+            resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
             return resultMap;
         }
@@ -216,19 +222,27 @@ public class BackstageController {
 
     @ResponseBody
     @RequestMapping("/back/deleteWorker")
-    public ResultMap deleteWorker(int uid, HttpServletRequest request){
+    public ResultMap deleteWorker(Integer uid, HttpServletRequest request){
         ResultMap resultMap = new ResultMap();
 
+        if (null == uid){
+            resultMap.setCode(CodeUtil.EMPTY);
+            resultMap.setDesc("请选择要删除的员工");
+            return resultMap;
+        }
         if (uid==1){
             resultMap.setCode(CodeUtil.PERMISSION_DENIED);
             resultMap.setDesc("权限不足");
+            return resultMap;
         }
+        logger.info(String.format("interface:/back/deleteWorker params: uid=", uid));
 
         String sessionKey = request.getHeader("sessionKey");
         String operatorId = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
         try {
             resultMap = userService.deleteWorker(uid, Integer.parseInt(operatorId));
         }catch (Exception e){
+            logger.error("interface:/back/deleteWorker error: ", e);
             resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
         }
@@ -245,6 +259,7 @@ public class BackstageController {
         try {
             resultMap = userService.updateWorker(uid, account, password, realName, Integer.parseInt(operatorId));
         }catch (Exception e){
+            logger.error("interface:/back/updateWorker error: ", e);
             resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
         }
@@ -261,6 +276,7 @@ public class BackstageController {
         try {
             resultMap = userService.getWorker(uid, Integer.parseInt(operatorId));
         }catch (Exception e){
+            logger.error("interface:/back/getWorker error: ", e);
             resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
         }
@@ -280,7 +296,7 @@ public class BackstageController {
         String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
 
         if (StringUtils.isEmpty(uid)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
             resultMap.setDesc("请先登录");
             return resultMap;
         }
@@ -288,8 +304,8 @@ public class BackstageController {
         try {
             resultMap = appService.getAppList();
         }catch (Exception e){
-            e.printStackTrace();
-            resultMap.setCode(0);
+            logger.error("interface:/back/getAppList error: ", e);
+            resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
             return resultMap;
         }
@@ -310,7 +326,7 @@ public class BackstageController {
             resultMap = appService.getApp(appId);
         }catch (Exception e){
             logger.error(String.format("interface:/back/getApp error params: appId=%d", appId), e);
-            resultMap.setCode(0);
+            resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
             return resultMap;
         }
@@ -372,8 +388,8 @@ public class BackstageController {
         try {
             resultMap = backstageService.addApp(uid, appUrl, logoUrl, title, remark, index, property, level);
         }catch (Exception e){
-            e.printStackTrace();
-            resultMap.setCode(0);
+            logger.error("interface:/back/addApp error", e);
+            resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
             return resultMap;
         }
@@ -471,7 +487,7 @@ public class BackstageController {
         try {
             resultMap = backstageService.updateApp(id, uid, appUrl, logoUrl, title, remark, index, property, level);
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error("interface:/back/updateApp error: ", e);
             resultMap.setCode(0);
             resultMap.setDesc("内部错误");
             return resultMap;
@@ -501,7 +517,7 @@ public class BackstageController {
         try {
             resultMap = backstageService.login(account, password);
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error("interface:/back/login error:", e);
             resultMap.setCode(0);
             resultMap.setDesc("内部错误");
             return resultMap;
@@ -532,7 +548,7 @@ public class BackstageController {
         try {
             resultMap = backstageService.getViews(uid);
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error("interface:/back/views error:", e);
             resultMap.setCode(0);
             resultMap.setDesc("内部错误");
             return resultMap;
@@ -553,20 +569,42 @@ public class BackstageController {
         String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
 
         if (StringUtils.isEmpty(uid)){
-            resultMap.setCode(-1);
+            resultMap.setCode(CodeUtil.PERMISSION_DENIED);
             resultMap.setDesc("请先登录");
             return resultMap;
         }
         try {
             resultMap = backstageService.getViewsList(uid);
         }catch (Exception e){
-            e.printStackTrace();
-            resultMap.setCode(0);
+            logger.error("interface:/back/viewsList error:", e);
+            resultMap.setCode(CodeUtil.INNER_ERROR);
             resultMap.setDesc("内部错误");
             return resultMap;
         }
         return resultMap;
     }
 
+    @ResponseBody
+    @RequestMapping("/back/actionList")
+    public ResultMap actionList(Integer pageNumber, Integer pageSize, HttpServletRequest request){
+        ResultMap resultMap = new ResultMap();
+
+        if (null == pageNumber || pageNumber <= 0){
+            pageNumber = PageUtil.pageNumber;
+        }
+        if (null == pageSize || pageSize <= 0){
+            pageSize = PageUtil.pageSize;
+        }
+
+        String sessionKey = request.getHeader("sessionKey");
+        String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
+        try{
+            resultMap = backstageService.actionList(Integer.parseInt(uid), pageNumber, pageSize);
+        }catch (Exception e){
+            logger.error("interface:/back/actionList error: ", e);
+        }
+
+        return resultMap;
+    }
 
 }

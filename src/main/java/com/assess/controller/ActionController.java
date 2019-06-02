@@ -47,6 +47,7 @@ public class ActionController {
         logger.info(String.format("interface:action params:appId=%s, code=%s, ip=%s", appId, code, ip));
 
         try {
+            //记录用户点击行为
             try {
                 if (!StringUtils.isEmpty(uid) && !StringUtils.isEmpty(appId)) {
                     Integer uidInt = Integer.parseInt(uid);
@@ -59,6 +60,7 @@ public class ActionController {
             if (StringUtils.isEmpty(code)){
                 code = "admin";
             }
+            //推广量增加
             try {
                 codeViewService.createOrModifyCodeView(code);
             }catch (Exception e){

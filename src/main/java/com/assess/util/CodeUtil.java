@@ -6,4 +6,6 @@ public class CodeUtil {
     public static int INNER_ERROR = 500;
 
     public static int PERMISSION_DENIED = 403;
+
+    public static int PAGE_ERROR = 600;
 }

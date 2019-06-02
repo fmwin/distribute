@@ -16,4 +16,6 @@ public interface IBackstageService {
     public ResultMap getViews(String uid) throws Exception;
 
     public ResultMap getViewsList(String uid) throws Exception;
+
+    public ResultMap actionList(Integer uid, Integer pageNumber, Integer pageSize) throws Exception;
 }

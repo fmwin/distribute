@@ -1,15 +1,15 @@
 package com.assess.service.impl;
 
-import com.assess.dao.SAppMapper;
-import com.assess.dao.SCodeViewsMapper;
-import com.assess.dao.SUrlMapper;
-import com.assess.dao.SUserMapper;
+import com.assess.dao.*;
 import com.assess.enums.RoleEnum;
 import com.assess.model.*;
+import com.assess.response.ActionResponse;
 import com.assess.response.ViewsResponse;
 import com.assess.service.IBackstageService;
 import com.assess.util.*;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -26,6 +26,8 @@ public class BackstageServiceImpl implements IBackstageService {
     private SAppMapper sAppMapper;
     @Resource
     private SCodeViewsMapper sCodeViewsMapper;
+    @Resource
+    private SActionMapper sActionMapper;
     @Resource
     private RedisUtil redisUtil;
 
@@ -349,6 +351,73 @@ public class BackstageServiceImpl implements IBackstageService {
 
         resultMap.setCode(1);
         resultMap.setDesc("获取今日推广数据成功");
+        return resultMap;
+    }
+
+    @Override
+    public ResultMap actionList(Integer uid, Integer pageNumber, Integer pageSize) throws Exception {
+        ResultMap resultMap = new ResultMap();
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", 0);
+
+        Integer start = 0;
+        if (pageNumber > 1) {
+            start = (pageNumber - 1) * pageSize;
+        }
+
+        List<ActionResponse> actionResponseList = new ArrayList<>();
+        if (isAdmin(uid) || isWorker(uid)){
+            SActionExample sActionExample = new SActionExample();
+            long count = sActionMapper.countByExample(sActionExample);
+            if (start > count){
+                resultMap.setCode(CodeUtil.PAGE_ERROR);
+                resultMap.setDesc("请选择正确的页码");
+                return resultMap;
+            }
+
+            map.put("total", count);
+            sActionExample.setOrderByClause(" create_date desc ");
+            RowBounds rowBounds = new RowBounds(start, pageSize);
+
+            List<SAction> actionList = sActionMapper.selectByExampleWithRowbounds(sActionExample, rowBounds);
+            if (!CollectionUtils.isEmpty(actionList)){
+                for (SAction sAction:actionList){
+                    ActionResponse actionResponse = new ActionResponse();
+                    SUser register = sUserMapper.selectByPrimaryKey(sAction.getUid());
+                    actionResponse.setIp(sAction.getIp());
+                    actionResponse.setCreateDate(DateUtil.format(sAction.getCreateDate(), DateUtil.mFormatIso8601Daytime));
+
+                    if (Objects.nonNull(register)) {
+                        actionResponse.setAccount(register.getAccount());
+                        actionResponse.setRealName(register.getRealName());
+
+                        if (Objects.nonNull(register.getDisUid())) {
+                            SUser disUser = sUserMapper.selectByPrimaryKey(register.getDisUid());
+                            if (Objects.nonNull(disUser)){
+                                actionResponse.setDisName(disUser.getRealName());
+                            }else{
+                                actionResponse.setDisName("admin");
+                            }
+                        }else {
+                            actionResponse.setDisName("admin");
+                        }
+
+                        SApp sApp = sAppMapper.selectByPrimaryKey(sAction.getAppId());
+                        if (Objects.nonNull(sAction)){
+                            actionResponse.setAppTitle(sApp.getTitle());
+                        }else{
+                            actionResponse.setAppTitle("未知app");
+                        }
+                    }
+                    actionResponseList.add(actionResponse);
+                }
+            }
+        }
+
+        map.put("list", actionResponseList);
+        resultMap.setCode(CodeUtil.SUCCESS);
+        resultMap.setDesc("获取用户行为列表成功");
+        resultMap.setData(map);
         return resultMap;
     }
 
