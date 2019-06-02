@@ -103,6 +103,7 @@
             <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
             <columnOverride column="uid" javaType="java.lang.Integer" />
             <columnOverride column="app_id" javaType="java.lang.Integer" />
+            <columnOverride column="ip" javaType="java.lang.String" />
         </table>
     </context>
 </generatorConfiguration>

@@ -25,7 +25,7 @@ public class ActionServiceImpl implements IActionService {
      * @throws Exception
      */
     @Override
-    public void addAction(Integer uid, Integer appId) throws Exception {
+    public void addAction(Integer uid, Integer appId, String ip) throws Exception {
 
         SApp sApp = sAppMapper.selectByPrimaryKey(appId);
 
@@ -33,6 +33,10 @@ public class ActionServiceImpl implements IActionService {
             SAction sAction = new SAction();
             sAction.setUid(uid);
             sAction.setAppId(appId);
+            if (ip.length()>15){
+                ip = ip.substring(0,15);
+            }
+            sAction.setIp(ip);
 
             sActionMapper.insert(sAction);
         }

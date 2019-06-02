@@ -30,17 +30,8 @@ public class LoginController {
     @RequestMapping("/api/index")
     public ResultMap index(HttpServletRequest servletRequest){
         ResultMap resultMap = new ResultMap();
-        String code = servletRequest.getParameter("disCode");
 
         try {
-            if (StringUtils.isEmpty(code)){
-                code = "admin";
-            }
-            try {
-                codeViewService.createOrModifyCodeView(code);
-            }catch (Exception e){
-                System.out.println("加量失败");
-            }
             resultMap = appService.getAppList();
         }catch (Exception e){
             e.printStackTrace();

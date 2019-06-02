@@ -10,6 +10,8 @@ public class SAction implements Serializable {
 
     private Integer appId;
 
+    private String ip;
+
     private Date createDate;
 
     private static final long serialVersionUID = 1L;
@@ -38,6 +40,14 @@ public class SAction implements Serializable {
         this.appId = appId;
     }
 
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip == null ? null : ip.trim();
+    }
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -55,6 +65,7 @@ public class SAction implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", uid=").append(uid);
         sb.append(", appId=").append(appId);
+        sb.append(", ip=").append(ip);
         sb.append(", createDate=").append(createDate);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
