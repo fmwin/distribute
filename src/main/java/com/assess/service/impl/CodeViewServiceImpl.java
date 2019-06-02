@@ -92,4 +92,9 @@ public class CodeViewServiceImpl implements ICodeViewService {
         resultMap.setData(response);
         return resultMap;
     }
+
+    @Override
+    public void logout(String sessionKey) throws Exception {
+        redisUtil.del(1, sessionKey);
+    }
 }
