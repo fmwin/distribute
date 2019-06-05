@@ -10,7 +10,9 @@ public class SCodeViews implements Serializable {
 
     private Integer views;
 
-    private Date date;
+    private String date;
+
+    private Date createDate;
 
     private static final long serialVersionUID = 1L;
 
@@ -38,12 +40,20 @@ public class SCodeViews implements Serializable {
         this.views = views;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(String date) {
+        this.date = date == null ? null : date.trim();
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     @Override
@@ -56,6 +66,7 @@ public class SCodeViews implements Serializable {
         sb.append(", code=").append(code);
         sb.append(", views=").append(views);
         sb.append(", date=").append(date);
+        sb.append(", createDate=").append(createDate);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

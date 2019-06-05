@@ -263,11 +263,11 @@ public class BackstageServiceImpl implements IBackstageService {
         String code = urlList.get(0).getCode();
 
         SCodeViewsExample sCodeViewsExample = new SCodeViewsExample();
-        sCodeViewsExample.createCriteria().andCodeEqualTo(code).andDateEqualTo(new Date());
+        sCodeViewsExample.createCriteria().andCodeEqualTo(code).andDateEqualTo(DateUtil.today(DateUtil.YYYY_MM_DD));
         List<SCodeViews> codeViewsList = sCodeViewsMapper.selectByExample(sCodeViewsExample);
 
         SCodeViewsExample sCodeViewsExampleMonth = new SCodeViewsExample();
-        sCodeViewsExampleMonth.createCriteria().andCodeEqualTo(code).andDateBetween(DateUtil.getMonthAgo(1), new Date());
+        sCodeViewsExampleMonth.createCriteria().andCodeEqualTo(code).andDateBetween(DateUtil.format(DateUtil.getMonthAgo(1), DateUtil.YYYY_MM_DD), DateUtil.format(new Date(), DateUtil.YYYY_MM_DD));
         List<SCodeViews> codeViewsListMonth = sCodeViewsMapper.selectByExample(sCodeViewsExampleMonth);
 
         Map<String, Object> result = new HashMap<>();
@@ -299,7 +299,7 @@ public class BackstageServiceImpl implements IBackstageService {
         Integer uidInt = Integer.parseInt(uid);
         if (isAdmin(uidInt)){
             SCodeViewsExample sCodeViewsExample = new SCodeViewsExample();
-            sCodeViewsExample.createCriteria().andDateEqualTo(new Date());
+            sCodeViewsExample.createCriteria().andDateEqualTo(DateUtil.today(DateUtil.YYYY_MM_DD));
             sCodeViewsExample.setOrderByClause("views desc");
             List<SCodeViews> sCodeViewsList = sCodeViewsMapper.selectByExample(sCodeViewsExample);
 
@@ -325,7 +325,7 @@ public class BackstageServiceImpl implements IBackstageService {
                     SUrlExample sUrlExample = new SUrlExample();
                     sUrlExample.createCriteria().andCodeEqualTo(sCodeViews.getCode());
                     List<SUrl> sUrlList = sUrlMapper.selectByExample(sUrlExample);
-                    if (Objects.isNull(sUrlList) || sUrlList.isEmpty()){
+                    if (CollectionUtils.isEmpty(sUrlList)){
                         view.setUid(1);
                         view.setCode("admin");
                         view.setRealName("admin");
@@ -336,7 +336,7 @@ public class BackstageServiceImpl implements IBackstageService {
                         view.setCode(sUrl.getCode());
                         SUser sUser = sUserMapper.selectByPrimaryKey(sUrl.getUsedUid());
                         view.setAccount(sUser.getAccount());
-                        if (null == sUser.getRealName()){
+                        if (StringUtils.isEmpty(sUser.getRealName())){
                             view.setRealName(sUser.getAccount());
                         }else {
                             view.setRealName(sUser.getRealName());

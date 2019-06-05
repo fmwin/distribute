@@ -5,7 +5,8 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="views" jdbcType="INTEGER" property="views" />
-    <result column="date" jdbcType="DATE" property="date" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -66,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, code, views, date
+    id, code, views, date, create_date
   </sql>
   <select id="selectByExample" parameterType="com.assess.model.SCodeViewsExample" resultMap="BaseResultMap">
     select
@@ -102,10 +103,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into s_code_views (code, views, date
-      )
-    values (#{code,jdbcType=VARCHAR}, #{views,jdbcType=INTEGER}, now()
-      )
+    insert into s_code_views (code, views, date, 
+      create_date)
+    values (#{code,jdbcType=VARCHAR}, #{views,jdbcType=INTEGER}, #{date,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.assess.model.SCodeViews">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -122,6 +123,9 @@
       <if test="date != null">
         date,
       </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="code != null">
@@ -131,7 +135,10 @@
         #{views,jdbcType=INTEGER},
       </if>
       <if test="date != null">
-        #{date,jdbcType=DATE},
+        #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -154,7 +161,10 @@
         views = #{record.views,jdbcType=INTEGER},
       </if>
       <if test="record.date != null">
-        date = #{record.date,jdbcType=DATE},
+        date = #{record.date,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null">
+        create_date = #{record.createDate,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -166,7 +176,8 @@
     set id = #{record.id,jdbcType=INTEGER},
       code = #{record.code,jdbcType=VARCHAR},
       views = #{record.views,jdbcType=INTEGER},
-      date = #{record.date,jdbcType=DATE}
+      date = #{record.date,jdbcType=VARCHAR},
+      create_date = #{record.createDate,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -181,7 +192,10 @@
         views = #{views,jdbcType=INTEGER},
       </if>
       <if test="date != null">
-        date = #{date,jdbcType=DATE},
+        date = #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -190,7 +204,8 @@
     update s_code_views
     set code = #{code,jdbcType=VARCHAR},
       views = #{views,jdbcType=INTEGER},
-      date = #{date,jdbcType=DATE}
+      date = #{date,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByExampleWithRowbounds" parameterType="com.assess.model.SCodeViewsExample" resultMap="BaseResultMap">

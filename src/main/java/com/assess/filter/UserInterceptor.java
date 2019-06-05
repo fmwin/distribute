@@ -29,7 +29,8 @@ public class UserInterceptor implements HandlerInterceptor {
         //logger.info("access url: "+ url +"; sessionKey: "+ sessionKey +"; sessionValue: "+sessionValue);
 
         if(url.contains("user/login") || url.contains("/back/login")
-                || url.contains("/api/register") || url.contains("/api/index") || url.contains("/api/login")){
+                || url.contains("/api/register") || url.contains("/api/index") || url.contains("/api/login")
+                || url.contains("/api/logout")){
             return true;
         }
 		/*if(url.contains("fund/")){

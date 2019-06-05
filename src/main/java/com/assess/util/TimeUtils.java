@@ -23,7 +23,7 @@
  * KKKKKKKKK    KKKKKKK    eeeeeeeeeeeeee      eeeeeeeeeeeeee    nnnnnn    nnnnnn
  *
  */
-package com.renren.toro.util;
+package com.assess.util;
 
 import java.lang.reflect.Method;
 import java.text.ParseException;
@@ -110,7 +110,7 @@ public class TimeUtils {
             return null;
         }
     }
-    
+
     /**
      * 获取当年的第一天
      * @return

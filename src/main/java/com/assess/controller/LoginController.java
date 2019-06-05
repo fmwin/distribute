@@ -5,7 +5,6 @@ import com.assess.service.ICodeViewService;
 import com.assess.util.Base64Util;
 import com.assess.util.CodeUtil;
 import com.assess.util.ResultMap;
-import com.sun.tools.javac.jvm.Code;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -89,6 +88,11 @@ public class LoginController {
     public ResultMap login(HttpServletRequest request) {
         ResultMap resultMap = new ResultMap();
         String sessionKey = request.getHeader("sessionKey");
+        if(StringUtils.isEmpty(sessionKey)){
+            resultMap.setCode(CodeUtil.SUCCESS);
+            resultMap.setDesc("退出成功");
+            return resultMap;
+        }
         String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
         logger.info(String.format("interface:/api/logout params: sessionKey:%s, uid:%s", sessionKey, uid));
 

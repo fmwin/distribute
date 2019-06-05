@@ -4,7 +4,7 @@ import com.assess.util.ResultMap;
 
 public interface ICodeViewService {
 
-    public void createOrModifyCodeView(String code) throws Exception;
+    public void createOrModifyCodeView(Integer uid) throws Exception;
 
     public ResultMap login(String account, String password) throws Exception;
 

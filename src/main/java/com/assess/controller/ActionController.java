@@ -43,6 +43,7 @@ public class ActionController {
         String appId = request.getParameter("appId");
         String code = request.getParameter("disCode");
         String ip = IpUtil.getIpAddress(request);
+        Integer uidInt = Integer.parseInt(uid);
 
         logger.info(String.format("interface:action params:appId=%s, code=%s, ip=%s", appId, code, ip));
 
@@ -50,7 +51,7 @@ public class ActionController {
             //记录用户点击行为
             try {
                 if (!StringUtils.isEmpty(uid) && !StringUtils.isEmpty(appId)) {
-                    Integer uidInt = Integer.parseInt(uid);
+
                     Integer appIdInt = Integer.parseInt(appId);
                     actionService.addAction(uidInt, appIdInt, ip);
                 }
@@ -62,7 +63,7 @@ public class ActionController {
             }
             //推广量增加
             try {
-                codeViewService.createOrModifyCodeView(code);
+                codeViewService.createOrModifyCodeView(uidInt);
             }catch (Exception e){
                 logger.error("加量失败", e);
             }

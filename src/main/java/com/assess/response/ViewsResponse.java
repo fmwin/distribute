@@ -7,7 +7,7 @@ public class ViewsResponse {
     private String account;
     private String code;
     private String realName;
-    private Date date;
+    private String date;
     private Integer views;
 
     public Integer getUid() {
@@ -42,11 +42,11 @@ public class ViewsResponse {
         this.realName = realName;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

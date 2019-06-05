@@ -6,11 +6,9 @@ import com.assess.dao.SUserMapper;
 import com.assess.enums.RoleEnum;
 import com.assess.model.*;
 import com.assess.service.ICodeViewService;
-import com.assess.util.Base64Util;
-import com.assess.util.RandomUtil;
-import com.assess.util.RedisUtil;
-import com.assess.util.ResultMap;
+import com.assess.util.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -30,34 +28,40 @@ public class CodeViewServiceImpl implements ICodeViewService {
     public static final String UID_HEAD = "uid_";
 
     @Override
-    public void createOrModifyCodeView(String code) throws Exception {
+    public void createOrModifyCodeView(Integer uid) throws Exception {
 
         /** 查询是否存在code，没有的话，直接将code置为admin */
-        if (!code.equals("admin")){
+        SUser user = sUserMapper.selectByPrimaryKey(uid);
+        if (Objects.nonNull(user)){
+            Integer disUid = user.getDisUid();
             SUrlExample sUrlExample = new SUrlExample();
-            sUrlExample.createCriteria().andCodeEqualTo(code);
+            sUrlExample.createCriteria().andUsedUidEqualTo(disUid);
+
             List<SUrl> sUrlList = sUrlMapper.selectByExample(sUrlExample);
-            if (Objects.isNull(sUrlList) || sUrlList.isEmpty()){
-                code = "admin";
+            if (!CollectionUtils.isEmpty(sUrlList)){
+                SUrl sUrl = sUrlList.get(0);
+                String code = sUrl.getCode();
+                SCodeViewsExample sCodeViewsExample = new SCodeViewsExample();
+                sCodeViewsExample.createCriteria().andCodeEqualTo(code).andDateEqualTo(DateUtil.today(DateUtil.YYYY_MM_DD));
+                List<SCodeViews> sCodeViews = sCodeViewsMapper.selectByExample(sCodeViewsExample);
+
+                if (Objects.isNull(sCodeViews) || sCodeViews.isEmpty()){
+                    SCodeViews codeView = new SCodeViews();
+                    codeView.setCode(code);
+                    codeView.setViews(1);
+
+                    sCodeViewsMapper.insert(codeView);
+                }else{
+                    SCodeViews codeView = sCodeViews.get(0);
+                    codeView.setViews(codeView.getViews()+1);
+
+                    sCodeViewsMapper.updateByPrimaryKey(codeView);
+                }
             }
         }
 
-        SCodeViewsExample sCodeViewsExample = new SCodeViewsExample();
-        sCodeViewsExample.createCriteria().andCodeEqualTo(code).andDateEqualTo(new Date());
-        List<SCodeViews> sCodeViews = sCodeViewsMapper.selectByExample(sCodeViewsExample);
 
-        if (Objects.isNull(sCodeViews) || sCodeViews.isEmpty()){
-            SCodeViews codeView = new SCodeViews();
-            codeView.setCode(code);
-            codeView.setViews(1);
 
-            sCodeViewsMapper.insert(codeView);
-        }else{
-            SCodeViews codeView = sCodeViews.get(0);
-            codeView.setViews(codeView.getViews()+1);
-
-            sCodeViewsMapper.updateByPrimaryKey(codeView);
-        }
     }
 
     @Override

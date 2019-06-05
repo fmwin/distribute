@@ -85,7 +85,7 @@
             <columnOverride column="url" javaType="java.lang.String" />
             <columnOverride column="code" javaType="java.lang.String" />
         </table>-->
-        <table tableName="s_app">
+        <!--<table tableName="s_app">
             <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
             <columnOverride column="app_url" javaType="java.lang.String" />
             <columnOverride column="logo_url" javaType="java.lang.String" />
@@ -96,13 +96,14 @@
             <columnOverride column="level" javaType="java.lang.Integer" />
             <columnOverride column="create_uid" javaType="java.lang.Integer" />
 
-    </table>
+    </table>-->
 
-        <!--<table tableName="s_code_views">
+        <table tableName="s_code_views">
             <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
             <columnOverride column="code" javaType="java.lang.String" />
             <columnOverride column="views" javaType="java.lang.Integer" />
-        </table>-->
+            <columnOverride column="date" javaType="java.lang.String" />
+        </table>
         <!--<table tableName="s_action">
             <generatedKey column="id" sqlStatement="Mysql" type="post" identity="true"/>
             <columnOverride column="uid" javaType="java.lang.Integer" />

@@ -1044,6 +1044,7 @@ public class DateUtil {
 		System.out.println(isFirstDayCurMonth(DateUtil.getDates("2016-11-30 00:00:00", DateUtil.mFormatIso8601Day)));
 		*/
         //System.out.println(getStartEnd(-3));
-        System.out.println(DateUtil.format(new Date(), DateUtil.mFormatIso8601Daytime));
+        //System.out.println(DateUtil.format(new Date(), DateUtil.mFormatIso8601Daytime));
+        System.out.println(format(getMonthAgo(1), YYYY_MM_DD));
     }
 }
