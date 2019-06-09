@@ -32,18 +32,12 @@ public class AppServiceImpl implements IAppService {
     public ResultMap getAppList() throws Exception {
         ResultMap resultMap = new ResultMap();
         List<SApp> sAppList = new ArrayList<>();
-        Object appCache = redisUtil.get(APP_CACHE, 0);
-        if (Objects.nonNull(appCache)){
-            JSONArray appArray = JSONArray.parseArray(appCache.toString());
-            sAppList = appArray.toJavaList(SApp.class);
-            logger.info("appArray"+appArray);
-        }else {
+
             SAppExample sAppExample = new SAppExample();
             sAppExample.setOrderByClause("index_number desc");
             sAppList = sAppMapper.selectByExample(sAppExample);
-            String cacheArray = JSONArray.toJSONString(sAppList);
-            redisUtil.set(APP_CACHE, cacheArray, 0);
-        }
+            //String cacheArray = JSONArray.toJSONString(sAppList);
+            //redisUtil.set(APP_CACHE, cacheArray, 0);
 
         resultMap.setCode(1);
         resultMap.setDesc("获取app列表成功");

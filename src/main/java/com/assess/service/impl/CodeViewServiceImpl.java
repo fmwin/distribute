@@ -39,16 +39,18 @@ public class CodeViewServiceImpl implements ICodeViewService {
 
             List<SUrl> sUrlList = sUrlMapper.selectByExample(sUrlExample);
             if (!CollectionUtils.isEmpty(sUrlList)){
+                String today = DateUtil.today(DateUtil.YYYY_MM_DD);
                 SUrl sUrl = sUrlList.get(0);
                 String code = sUrl.getCode();
                 SCodeViewsExample sCodeViewsExample = new SCodeViewsExample();
-                sCodeViewsExample.createCriteria().andCodeEqualTo(code).andDateEqualTo(DateUtil.today(DateUtil.YYYY_MM_DD));
+                sCodeViewsExample.createCriteria().andCodeEqualTo(code).andDateEqualTo(today);
                 List<SCodeViews> sCodeViews = sCodeViewsMapper.selectByExample(sCodeViewsExample);
 
                 if (Objects.isNull(sCodeViews) || sCodeViews.isEmpty()){
                     SCodeViews codeView = new SCodeViews();
                     codeView.setCode(code);
                     codeView.setViews(1);
+                    codeView.setDate(today);
 
                     sCodeViewsMapper.insert(codeView);
                 }else{

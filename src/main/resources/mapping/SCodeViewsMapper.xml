@@ -106,7 +106,7 @@
     insert into s_code_views (code, views, date, 
       create_date)
     values (#{code,jdbcType=VARCHAR}, #{views,jdbcType=INTEGER}, #{date,jdbcType=VARCHAR}, 
-      #{createDate,jdbcType=TIMESTAMP})
+      now())
   </insert>
   <insert id="insertSelective" parameterType="com.assess.model.SCodeViews">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">

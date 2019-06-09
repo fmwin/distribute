@@ -41,11 +41,11 @@ public class ActionController {
         String uid = Base64Util.getOriginString(sessionKey).replace(UID_HEAD, "");
 
         String appId = request.getParameter("appId");
-        String code = request.getParameter("disCode");
+        //String code = request.getParameter("disCode");
         String ip = IpUtil.getIpAddress(request);
         Integer uidInt = Integer.parseInt(uid);
 
-        logger.info(String.format("interface:action params:appId=%s, code=%s, ip=%s", appId, code, ip));
+        logger.info(String.format("interface:action params:appId=%s, ip=%s", appId, ip));
 
         try {
             //记录用户点击行为
@@ -53,13 +53,10 @@ public class ActionController {
                 if (!StringUtils.isEmpty(uid) && !StringUtils.isEmpty(appId)) {
 
                     Integer appIdInt = Integer.parseInt(appId);
-                    actionService.addAction(uidInt, appIdInt, ip);
+                    resultMap.setData(actionService.addAction(uidInt, appIdInt, ip));
                 }
             }catch (Exception e){
                 logger.error("统计用户行为失败", e);
-            }
-            if (StringUtils.isEmpty(code)){
-                code = "admin";
             }
             //推广量增加
             try {

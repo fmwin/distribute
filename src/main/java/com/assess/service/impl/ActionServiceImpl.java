@@ -26,11 +26,13 @@ public class ActionServiceImpl implements IActionService {
      * @throws Exception
      */
     @Override
-    public void addAction(Integer uid, Integer appId, String ip) throws Exception {
+    public String addAction(Integer uid, Integer appId, String ip) throws Exception {
 
         SApp sApp = sAppMapper.selectByPrimaryKey(appId);
+        String url = "http://chuangya.tianjiurc.com/hello/index.html";
 
         if (Objects.nonNull(sApp)) {
+            url = sApp.getAppUrl();
             SAction sAction = new SAction();
             sAction.setUid(uid);
             sAction.setAppId(appId);
@@ -41,5 +43,6 @@ public class ActionServiceImpl implements IActionService {
 
             sActionMapper.insert(sAction);
         }
+        return url;
     }
 }

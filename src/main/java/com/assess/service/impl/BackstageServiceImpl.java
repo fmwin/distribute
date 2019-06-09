@@ -34,6 +34,8 @@ public class BackstageServiceImpl implements IBackstageService {
     public static final String URL_HEAD = "http://chuangya.tianjiurc.com/hello/index.html?disCode=";
     public static final String UID_HEAD = "uid_";
 
+    private static final String APP_CACHE = "app_cache";
+
     @Override
     public ResultMap generateUrl(int createUid, int usedUid) throws Exception {
 
@@ -128,6 +130,8 @@ public class BackstageServiceImpl implements IBackstageService {
         }
 
         sAppMapper.insert(sApp);
+
+        redisUtil.del(0, APP_CACHE);
 
         resultMap.setCode(1);
         resultMap.setDesc("创建app成功");
@@ -403,7 +407,7 @@ public class BackstageServiceImpl implements IBackstageService {
                         }
 
                         SApp sApp = sAppMapper.selectByPrimaryKey(sAction.getAppId());
-                        if (Objects.nonNull(sAction)){
+                        if (Objects.nonNull(sApp)){
                             actionResponse.setAppTitle(sApp.getTitle());
                         }else{
                             actionResponse.setAppTitle("未知app");
